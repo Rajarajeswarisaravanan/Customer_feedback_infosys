@@ -7,13 +7,13 @@ STOPWORDS={
 }
 
 def clean_text(text):
-    text=str(text).lower()
-    text=re.sub(r"http\S+","",text) # remove urls
-    text=re.sub(r"\d+","",text) # remove numbers
-    text=text.translate(str.maketrans("","",string.punctuation)) # remove punctuation
-    text=re.sub(r"\s+","",text).strip() # remove extra whitespace
-    words=[W for W in text.split() if W not in STOPWORDS]
-    return " ".join(words)
+    text = str(text).lower()
+    text = re.sub(r"http\S+", "", text)  # remove URLs
+    text = re.sub(r"\d+", "", text)  # remove numbers
+    text = text.translate(str.maketrans("", "", string.punctuation))  # remove punctuation
+    words = text.split()  # split text into words
+    words = [w for w in words if w not in STOPWORDS]  # remove stopwords
+    return " ".join(words)  # join words back into a single string
 
 def main():
     file_path_excel="ReviewSense_Customer_Feedback_5000.xlsx"
@@ -44,4 +44,22 @@ def main():
     print(df[["feedback","clean_feedback"]].head())
 if __name__=="__main__":
     main()
-    
+
+ plt.figure(figsize=(8,5))
+    colors= ['green','red','gray']
+    sentiment_counts.plot(kind='bar',color=colors)
+
+    plt.title('How cutomer Feel - Sentiment Summary', fontsize=14)
+    plt.xlabel('Sentiment', fontsize=12)
+    plt.ylabel('Number of Reviews', fontsize=12)
+    plt.xticks(rotation=0)
+
+    for i,count in enumerate(sentiment_counts):
+        plt.text(i,count+20,str(count),ha='center', fontsize=11)
+
+        plt.savefig('sentiment-bar-chart.png',dpi=100,bbox_inches='tight')
+        plt.show()
+        print("Bar chart saved as:sentiment-bar-chart.png")
+
+
+    print(df[["clean_feedback", "sentiment", "confidence_score"]].head())
